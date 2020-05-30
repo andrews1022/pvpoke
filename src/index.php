@@ -58,9 +58,7 @@
 			<div class="date">April 28, 2020</div>
 			<p>Elite TM's are now available! Which exclusive moves and Pokemon are the best for your PvP team?</p>
 		</div>
-
 	</div>
-
 </div>
 
 <?php require_once 'footer.php'; ?>

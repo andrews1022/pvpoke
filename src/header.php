@@ -1,55 +1,55 @@
 <?php require_once 'modules/config.php';
-$SITE_VERSION = '1.15.0.9';
+	$SITE_VERSION = '1.15.0.9';
 
-// This prevents caching on local testing
-if (strpos($WEB_ROOT, 'src') !== false) {
-    $SITE_VERSION = rand(1,1000) . '.' . rand(1,1000) . '.' . rand(1,1000);
-}
-
-// Initialize settings object
-if(isset($_COOKIE['settings'])){
-	$_SETTINGS = json_decode($_COOKIE['settings']);
-
-	// Fill in missing settings with defaults
-	if(! isset($_SETTINGS->matrixDirection)){
-		$_SETTINGS->matrixDirection = "row";
+	// This prevents caching on local testing
+	if (strpos($WEB_ROOT, 'src') !== false) {
+		$SITE_VERSION = rand(1,1000) . '.' . rand(1,1000) . '.' . rand(1,1000);
 	}
-} else{
-	$_SETTINGS = (object) [
-		'defaultIVs' => "gamemaster",
-		'animateTimeline' => 1,
-		'theme' => 'default'
-	];
-}
 
-$performGroupMigration = false;
+	// Initialize settings object
+	if (isset($_COOKIE['settings'])) {
+		$_SETTINGS = json_decode($_COOKIE['settings']);
 
-if(! isset($_COOKIE['migrate'])){
-	$performGroupMigration = true;
+		// Fill in missing settings with defaults
+		if (!isset($_SETTINGS->matrixDirection)) {
+			$_SETTINGS->matrixDirection = "row";
+		}
+	} else{
+		$_SETTINGS = (object) [
+			'defaultIVs' 			=> "gamemaster",
+			'animateTimeline'	=> 1,
+			'theme' 					=> 'default'
+		];
+	}
 
-	setcookie('migrate', 'true', time() + (5 * 365 * 24 * 60 * 60), '/');
-}
+	$performGroupMigration = false;
 
+	if (!isset($_COOKIE['migrate'])) {
+		$performGroupMigration = true;
+
+		setcookie('migrate', 'true', time() + (5 * 365 * 24 * 60 * 60), '/');
+	}
 ?>
+
 <!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <?php
-if(! isset($META_TITLE)){
-	$META_TITLE = 'PvPoke | Open-Source Battle Simulator, Rankings &amp; Team Building for Pokemon GO PvP';
-} else{
-	$META_TITLE = $META_TITLE . ' | PvPoke';
-}
+	if (!isset($META_TITLE)) {
+		$META_TITLE = 'PvPoke | Open-Source Battle Simulator, Rankings &amp; Team Building for Pokemon GO PvP';
+	} else {
+		$META_TITLE = $META_TITLE . ' | PvPoke';
+	}
 
-if(! isset($META_DESCRIPTION)){
-	$META_DESCRIPTION = 'Looking for an edge in Pokemon GO Trainer Battles? Become a master with our open-source Pokemon battle simulator, explore the top Pokemon rankings, and get your team rated for PvP battles.';
-}
+	if (! isset($META_DESCRIPTION)) {
+		$META_DESCRIPTION = 'Looking for an edge in Pokemon GO Trainer Battles? Become a master with our open-source Pokemon battle simulator, explore the top Pokemon rankings, and get your team rated for PvP battles.';
+	}
 
-if(! isset($OG_IMAGE)){
-	$OG_IMAGE = 'https://pvpoke.com/img/og.jpg';
-}
+	if (! isset($OG_IMAGE)) {
+		$OG_IMAGE = 'https://pvpoke.com/img/og.jpg';
+	}
 ?>
 
 <title><?php echo $META_TITLE; ?></title>
@@ -90,7 +90,7 @@ if(! isset($OG_IMAGE)){
 	var webRoot = "<?php echo $WEB_ROOT; ?>";
 	var siteVersion = "<?php echo $SITE_VERSION; ?>";
 
-	<?php if(isset($_COOKIE['settings'])) : ?>
+	<?php if (isset($_COOKIE['settings'])) : ?>
 		var settings = {
 			defaultIVs: "<?php echo htmlspecialchars($_SETTINGS->defaultIVs); ?>",
 			animateTimeline: <?php echo htmlspecialchars($_SETTINGS->animateTimeline); ?>,
@@ -108,18 +108,16 @@ if(! isset($OG_IMAGE)){
 
 
 	// If $_GET request exists, output as JSON into Javascript
-
 	<?php
-	foreach($_GET as &$param){
-		$param = htmlspecialchars($param);
-	}
+		foreach($_GET as &$param){
+			$param = htmlspecialchars($param);
+		}
 
-
-	if($_GET){
-		echo 'var get = ' . json_encode($_GET) . ';';
-	} else{
-		echo 'var get = false;';
-	}
+		if ($_GET) {
+			echo 'var get = ' . json_encode($_GET) . ';';
+		} else {
+			echo 'var get = false;';
+		}
 	?>
 </script>
 

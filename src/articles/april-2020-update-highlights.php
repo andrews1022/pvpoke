@@ -1,13 +1,12 @@
 <?php
 
+	$META_TITLE = 'Highlights of the April 2020 Update';
 
-$META_TITLE = 'Highlights of the April 2020 Update';
+	$META_DESCRIPTION = 'Wild new moves and effects are changing Trainer Battles in unbelievable ways!';
 
-$META_DESCRIPTION = 'Wild new moves and effects are changing Trainer Battles in unbelievable ways!';
+	$OG_IMAGE = 'https://pvpoke.com/assets/articles/2019-update-header.jpg';
 
-$OG_IMAGE = 'https://pvpoke.com/assets/articles/2019-update-header.jpg';
-
-require_once '../header.php';
+	require_once '../header.php';
 
 ?>
 
@@ -17,12 +16,22 @@ require_once '../header.php';
 	<img src="<?php echo $WEB_ROOT;?>assets/articles/2019-update-header.jpg" />
 	<p>The April movepool update for Pokemon GO came with a lot of twists and turns that will reshape the meta in all three leagues! It’s so crazy it’s almost unbelievable. Don’t worry, I’ve got you covered. We’re going to dive into all the changes and how to approach battle in the post-April world.</p>
 	<p>Jump to a section:
-  		<ol>
-			<li><a href="#ancient-power">Ancient Power Hooking Mechanics</a></li>
-			<li><a href="#status-moves">Status Moves</a></li>
-			<li><a href="#movepool-updates">Movepool Updates</a></li>
-			<li><a href="#shiny-bonus">Shiny Damage Bonus Changes</a></li>
-			<li><a href="#alt-forme">Alt Forme Giratina</a></li>
+		<ol>
+			<li>
+				<a href="#ancient-power">Ancient Power Hooking Mechanics</a>
+			</li>
+			<li>
+				<a href="#status-moves">Status Moves</a>
+			</li>
+			<li>
+				<a href="#movepool-updates">Movepool Updates</a>
+			</li>
+			<li>
+				<a href="#shiny-bonus">Shiny Damage Bonus Changes</a>
+			</li>
+			<li>
+				<a href="#alt-forme">Alt Forme Giratina</a>
+			</li>
 		</ol>
 	</p>
 
