@@ -1,32 +1,9 @@
 /* STRUCTURE */
-html {
-	height: 100%;
-}
-
-body,
-html {
-	margin: 0;
-	font-family: Arial, sans-serif;
-	color: $global-font-color;
-}
-
 body {
 	background: #f3fbfe;
 	background-size: cover;
 	position: relative;
 	min-height: 100%;
-}
-
-.clear {
-	clear: both;
-}
-
-.hide {
-	display: none;
-}
-
-.mobile {
-	display: none;
 }
 
 header {
@@ -45,7 +22,7 @@ header {
 		font-weight: normal;
 
 		a {
-			background-image: url(../img/app_192.png);
+			background-image: url('../img/app_192.png');
 			background-size: contain;
 			text-decoration: none;
 			color: #000;

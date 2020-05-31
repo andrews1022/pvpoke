@@ -1,16 +1,27 @@
+// Font
+$font-open-sans: 'Roboto', sans-serif;
+
+// Basic Shades
+$white: #fff;
+$black: #000;
+
 $global-font-color:#000;
 
+// Attack, Defense, & HP Colors
 $color-attack:#ed6774;
 $color-defense:#6696ed;
 $color-hp:#0088a6;
 
+// Move Colors
 $color-move-power:#a60087;
 $color-move-energy:#0087a6;
 $color-move-duration:#87a600;
 
+// Faint/shield Colors
 $color-faint:#ff0000;
 $color-shield:#df46e5;
 
+// Type Colors
 $color-bug-dark:#9bc231;
 $color-bug-light:#aec92c;
 $color-dark-dark:#52505e;
@@ -65,3 +76,4 @@ $color-off-black:#333;
 
 $color-stat-buff:#f1841c;
 $color-stat-debuff:#0158d0;
+

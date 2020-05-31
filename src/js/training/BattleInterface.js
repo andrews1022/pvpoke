@@ -1,16 +1,13 @@
 /*
-* Interface functionality for move list and explorer
-*/
-
+ * Interface functionality for move list and explorer
+ */
 var BattlerMaster = (function () {
-    var instance;
+	var instance;
 
-    function createInstance(matchHandler) {
+	function createInstance(matchHandler) {
+		var object = new interfaceObject(matchHandler);
 
-
-        var object = new interfaceObject(matchHandler);
-
-		function interfaceObject(matchHandler){
+		function interfaceObject(matchHandler) {
 			var handler = matchHandler;
 
 			var self = this;
@@ -48,8 +45,7 @@ var BattlerMaster = (function () {
 			var bufferedSwitch = -1; // If autotap is on, preserve the last input switch and attempt to use until successful
 
 			// Kick off the setup and the battle
-
-			this.init = function(props, b, p){
+			this.init = function (props, b, p) {
 				properties = props;
 				battle = b;
 				players = p;
@@ -58,7 +54,7 @@ var BattlerMaster = (function () {
 				time = 0;
 
 				// Event listeners
-				if(! listenersInitialized){
+				if (!listenersInitialized) {
 					$(".battle-window").on("click", battleWindowClick);
 					$(".shield-window .close").on("click", closeShieldClick);
 					$(".shield-window .shield").on("click", useShieldClick);
@@ -79,16 +75,16 @@ var BattlerMaster = (function () {
 				// Alternate CMP
 				priorityAssignment = (priorityAssignment == 1) ? 0 : 1;
 
-				for(var i = 0; i < players.length; i++){
-					if(i == priorityAssignment){
+				for (var i = 0; i < players.length; i++) {
+					if (i == priorityAssignment) {
 						players[i].setPriority(1);
-					} else{
+					} else {
 						players[i].setPriority(0);
 					}
 				}
 
 				// Turn on autotapping if override set
-				if(props.autotapOverride){
+				if (props.autotapOverride) {
 					autotap = true;
 					$(".controls .auto-tap").addClass("active");
 				}
@@ -105,7 +101,6 @@ var BattlerMaster = (function () {
 				battle.emulate(self.update);
 
 				// Reset interface for new battle
-
 				$(".battle-window .switch-btn").removeClass("active");
 				$(".controls .button-stack .pause-btn").removeClass("active");
 				$(".battle-window .scene .pokemon-container").removeClass("animate-switch");
@@ -118,45 +113,43 @@ var BattlerMaster = (function () {
 				$("body").addClass("battle-active");
 
 				// Scroll to the top of the page
-				$("html, body").animate({ scrollTop: 0 }, 500);
+				$("html, body").animate({
+					scrollTop: 0
+				}, 500);
 			};
 
 			// Given an update object, update the battle interface
-
-			this.update = function(response){
+			this.update = function (response) {
 				turn = response.turn;
 				time += 500;
 
 				// Interpret phase for player
-
-				if(response.phase == "suspend_charged"){
-					if(response.actor == 0){
+				if (response.phase == "suspend_charged") {
+					if (response.actor == 0) {
 						response.phase = "suspend_charged_attack";
-					} else{
-						if(response.players[0].getShields() > 0){
+					} else {
+						if (response.players[0].getShields() > 0) {
 							response.phase = "suspend_charged_shield";
-						} else{
+						} else {
 							response.phase = "suspend_charged_no_shields";
 						}
-
 					}
 				}
 
-				if(response.phase == "suspend_switch"){
-					if(response.actors.indexOf(0) > -1){
+				if (response.phase == "suspend_switch") {
+					if (response.actors.indexOf(0) > -1) {
 						response.phase = "suspend_switch_self";
 					}
 				}
 
 				// Handle phase change
-
-				if(phase != response.phase){
+				if (phase != response.phase) {
 					// Transition into this phase
-					switch(response.phase){
+					switch (response.phase) {
 						case "suspend_charged_attack":
 							$(".charge-window .move-bars").html('');
 							$(".charge-window .move-bars").append($(".controls .move-bar").eq(response.move).clone().addClass(activePokemon[0].chargedMoves[response.move].type));
-							$(".battle-window .animate-message .text").html("Tap to charge up "+activePokemon[0].chargedMoves[response.move].name+"!");
+							$(".battle-window .animate-message .text").html("Tap to charge up " + activePokemon[0].chargedMoves[response.move].name + "!");
 							$(".switch-window").removeClass("active");
 
 							charge = 0;
@@ -188,7 +181,7 @@ var BattlerMaster = (function () {
 							$(".animate-message .text").html(activePokemon[response.actor].speciesName + " used " + response.moveName);
 
 							// If we're transitioning from the Charged Move minigame, submit the damage
-							if(phase == "suspend_charged_attack"){
+							if (phase == "suspend_charged_attack") {
 								var chargeMultiplier = Math.min(.25 + (.75 * (charge / maxCharge)), 1);
 								battle.setChargeAmount(chargeMultiplier);
 							}
@@ -219,7 +212,7 @@ var BattlerMaster = (function () {
 						case "game_over":
 							battleResult = response.result;
 
-							switch(response.result){
+							switch (response.result) {
 								case "win":
 									$(".battle-window .end-screen .result").html("Victory!")
 									$(".battle-window .end-screen .subtitle").html("Way to go!")
@@ -236,9 +229,9 @@ var BattlerMaster = (function () {
 									break;
 							}
 
-							setTimeout(function(){
+							setTimeout(function () {
 								$("body").removeClass("battle-active");
-								$(".battle-window").attr("phase","game_over_screen");
+								$(".battle-window").attr("phase", "game_over_screen");
 								self.displayEndGameStats();
 								self.reportBattleAnalytics();
 							}, 1000);
@@ -247,7 +240,7 @@ var BattlerMaster = (function () {
 					}
 
 					// Transition out of this phase
-					switch(phase){
+					switch (phase) {
 						case "animating":
 							$(".battle-window .pokemon-container .shield-sprite-container").removeClass("active");
 							break;
@@ -255,35 +248,33 @@ var BattlerMaster = (function () {
 				}
 
 				// Update Pokemon displays
-
-				for(var i = 0; i < response.pokemon.length; i++){
+				for (var i = 0; i < response.pokemon.length; i++) {
 					var pokemon = response.pokemon[i];
-
 					var $poke = $(".scene .pokemon-container").eq(i);
 					var percent = (pokemon.hp / pokemon.stats.hp) * 100;
 
-					$poke.find(".hp .bar").css("width", percent+"%" );
-					if(percent <= 25){
+					$poke.find(".hp .bar").css("width", percent + "%");
+					if (percent <= 25) {
 						$poke.find(".hp .bar").eq(1).attr("color", "red");
-					} else if(percent <= 50){
+					} else if (percent <= 50) {
 						$poke.find(".hp .bar").eq(1).attr("color", "yellow");
-					} else{
+					} else {
 						$poke.find(".hp .bar").eq(1).attr("color", "green");
 					}
 
 					// If a switch has occured, update the Pokemon display and Charged Move buttons
-					if((activePokemon.length < i)||(activePokemon[i] != pokemon)){
+					if ((activePokemon.length < i) || (activePokemon[i] != pokemon)) {
 						$poke.find(".name").html(pokemon.speciesName);
 						$poke.find(".name").attr("class", "name " + pokemon.types[0]);
 						$poke.attr("cooldown", pokemon.fastMove.cooldown);
 
 						// Show both Pokemon at the start
-						if(response.turn == 1){
+						if (response.turn == 1) {
 							$poke.find(".pokemon").attr("type-1", pokemon.types[0]);
 
-							if(pokemon.types[1] != "none"){
+							if (pokemon.types[1] != "none") {
 								$poke.find(".pokemon").attr("type-2", pokemon.types[1]);
-							} else{
+							} else {
 								$poke.find(".pokemon").attr("type-2", pokemon.types[0]);
 							}
 							$poke.find(".pokemon").attr("data-pokemon-id", pokemon.speciesId);
@@ -292,45 +283,44 @@ var BattlerMaster = (function () {
 						}
 
 						// Display Pokemon types
-						$(".team-indicator").eq(i).find(".types .type").eq(0).attr("class","type " + pokemon.types[0]);
-						$(".team-indicator").eq(i).find(".types .type").eq(1).attr("class","type " + pokemon.types[1]);
+						$(".team-indicator").eq(i).find(".types .type").eq(0).attr("class", "type " + pokemon.types[0]);
+						$(".team-indicator").eq(i).find(".types .type").eq(1).attr("class", "type " + pokemon.types[1]);
 						$(".team-indicator").eq(i).find(".types .type").eq(0).html(pokemon.types[0].charAt(0));
 						$(".team-indicator").eq(i).find(".types .type").eq(1).html(pokemon.types[1].charAt(0));
 
-						if(i == 0){
+						if (i == 0) {
 							$(".move-bar").hide();
 							$(".move-labels .label").hide();
 
-							for(var n = 0; n < pokemon.chargedMoves.length; n++){
+							for (var n = 0; n < pokemon.chargedMoves.length; n++) {
 								var chargedMove = pokemon.chargedMoves[n];
 								var $bar = $(".battle-window .move-bar").eq(n);
 
 								$bar.show();
 								$(".move-labels .label").eq(n).show();
 								$bar.find(".label").html(chargedMove.abbreviation);
-								$bar.find(".bar").attr("type",chargedMove.type);
-								$bar.find(".bar-back").attr("class","bar-back " + chargedMove.type);
+								$bar.find(".bar").attr("type", chargedMove.type);
+								$bar.find(".bar-back").attr("class", "bar-back " + chargedMove.type);
 								$(".battle-window .move-labels .label").eq(n).html(chargedMove.name);
 							}
 						}
 					}
 
 					// Update move buttons
-
-					if(i == 0){
-						for(var n = 0; n < pokemon.chargedMoves.length; n++){
+					if (i == 0) {
+						for (var n = 0; n < pokemon.chargedMoves.length; n++) {
 							var chargedMove = pokemon.chargedMoves[n];
 							var $bar = $(".battle-window .move-bar").eq(n);
 							var chargePercent = Math.min((pokemon.energy / chargedMove.energy), 1);
 							var position = 66 - (chargePercent * 66);
-							$bar.find(".bar").first().css("background-position-y", position+"px");
+							$bar.find(".bar").first().css("background-position-y", position + "px");
 
 							//$bar.find(".bar").first().css("height", chargePercent+"%");
 
-							if(chargePercent >= 1){
+							if (chargePercent >= 1) {
 								$bar.addClass("active");
 								$(".battle-window .move-labels .label").eq(n).addClass("active");
-							} else{
+							} else {
 								$bar.removeClass("active");
 								$(".battle-window .move-labels .label").eq(n).removeClass("active");
 							}
@@ -339,8 +329,7 @@ var BattlerMaster = (function () {
 				}
 
 				// Update player displays
-
-				for(var i = 0; i < response.players.length; i++){
+				for (var i = 0; i < response.players.length; i++) {
 					var player = response.players[i];
 
 					$(".battle-window .shields").eq(i).html(player.getShields());
@@ -348,30 +337,28 @@ var BattlerMaster = (function () {
 					// Display Pokeballs for remaining Pokemon
 					var activePokemonCount = 0;
 					var team = player.getTeam();
-					for(var n = 0; n < team.length; n++){
-						if(team[n].hp > 0){
+					for (var n = 0; n < team.length; n++) {
+						if (team[n].hp > 0) {
 							activePokemonCount++;
 						}
 					}
 
-
 					$(".team-indicator").eq(i).find(".ball").addClass("fainted");
 
-					for(var j = 0; j < activePokemonCount; j++){
-						if(i == 0){
+					for (var j = 0; j < activePokemonCount; j++) {
+						if (i == 0) {
 							$(".team-indicator.left .ball").eq(j).removeClass("fainted");
-						} else{
-							$(".team-indicator.right .ball").eq(2-j).removeClass("fainted");
+						} else {
+							$(".team-indicator.right .ball").eq(2 - j).removeClass("fainted");
 						}
 					}
 
 					// Update switch timer
-
-					if(i == 0){
-						if(player.getSwitchTimer() == 0){
+					if (i == 0) {
+						if (player.getSwitchTimer() == 0) {
 							$(".battle-window .switch-btn").addClass("active");
 							$(".battle-window .switch-btn").html("&#8645;");
-						} else{
+						} else {
 							$(".battle-window .switch-btn").removeClass("active");
 							$(".battle-window .switch-btn").html(Math.floor(player.getSwitchTimer() / 1000));
 
@@ -382,26 +369,28 @@ var BattlerMaster = (function () {
 				}
 
 				activePokemon = [];
-				for(var i = 0; i < response.pokemon.length;i++){
+
+				for (var i = 0; i < response.pokemon.length; i++) {
 					activePokemon.push(response.pokemon[i]);
 				}
+
 				phase = response.phase;
 
 				$(".battle-window").attr("phase", phase);
 
-				switch(phase){
+				switch (phase) {
 					case "countdown":
 
-						if((response.countdown !== undefined)&&(countdown+1 != response.countdown)){
-							countdown = response.countdown-1;
-							if(countdown == 0){
+						if ((response.countdown !== undefined) && (countdown + 1 != response.countdown)) {
+							countdown = response.countdown - 1;
+							if (countdown == 0) {
 								countdown = "Go";
 							}
 
 							$(".battle-window .countdown").removeClass("animate");
 							$(".battle-window .countdown .text").html(countdown);
 
-							setTimeout(function(){
+							setTimeout(function () {
 								$(".battle-window .countdown").addClass("animate");
 							}, 50);
 						}
@@ -410,35 +399,32 @@ var BattlerMaster = (function () {
 				}
 
 				// Display messages for this turn
-
-				for(var i = 0; i < response.messages.length; i++){
+				for (var i = 0; i < response.messages.length; i++) {
 					var message = response.messages[i];
-					var $messageItem = $("<div turn=\""+response.turn+"\">"+message.str+"</div>");
+					var $messageItem = $("<div turn=\"" + response.turn + "\">" + message.str + "</div>");
 					$(".battle-window .scene .pokemon-container").eq(message.index).find(".messages").append($messageItem);
 
 					// Animate an opponent's shield when they shield
-					if((message.index == 1)&&(message.str == "Blocked!")){
+					if ((message.index == 1) && (message.str == "Blocked!")) {
 						$(".battle-window .pokemon-container.opponent .shield-sprite-container").addClass("active");
 					}
 				}
 
 				// Clear any messages past the expiry time
-
-				$(".battle-window .messages div").each(function(index, value){
+				$(".battle-window .messages div").each(function (index, value) {
 					var messageTurn = parseInt($(this).attr("turn"));
-					if(response.turn - messageTurn >= 4){
+					if (response.turn - messageTurn >= 4) {
 						$(this).remove();
 					}
 				});
 
 				// Display any new animations
-
-				for(var i = 0; i < response.animations.length; i++){
+				for (var i = 0; i < response.animations.length; i++) {
 					var animation = response.animations[i];
 					var fastAnimationOccurred = false;
 					var damageAnimationOccurred = false;
 
-					switch(animation.type){
+					switch (animation.type) {
 						case "fast":
 							fastAnimationOccurred = true;
 							$(".battle-window .scene .pokemon-container").eq(animation.actor).find(".fast-move-circle").attr("class", "fast-move-circle " + activePokemon[animation.actor].fastMove.type);
@@ -450,29 +436,29 @@ var BattlerMaster = (function () {
 							$(".battle-window .scene .pokemon-container").eq(animation.actor).addClass("animate-switch");
 							$(".battle-window .scene .pokemon-container").eq(animation.actor).attr("animation-time", time);
 
-							if(actor == 0){
+							if (actor == 0) {
 								bufferedSwitch = -1;
 							}
 
-							if(animation.value === false){
+							if (animation.value === false) {
 								var duration = 1000;
 
-								if(phase == "suspend_switch"){
-
+								if (phase == "suspend_switch") {
 									duration = 0;
 								}
 
 								$(".battle-window .scene .pokemon-container").eq(animation.actor).attr("animation-duration", duration);
 							}
+
 							break;
 
 						case "damage":
 							damageAnimationOccurred = true;
 							var effectiveness = "effective";
 
-							if(animation.value > 1){
+							if (animation.value > 1) {
 								effectiveness = "super-effective";
-							} else if(animation.value < 1){
+							} else if (animation.value < 1) {
 								effectiveness = "not-very-effective";
 							}
 
@@ -480,36 +466,34 @@ var BattlerMaster = (function () {
 							break;
 					}
 
-					if(fastAnimationOccurred){
-						setTimeout(function(){
+					if (fastAnimationOccurred) {
+						setTimeout(function () {
 							$(".battle-window .scene .pokemon-container").removeClass("animate-fast");
 						}, 250);
 					}
 
-					if(damageAnimationOccurred){
-						setTimeout(function(){
+					if (damageAnimationOccurred) {
+						setTimeout(function () {
 							$(".battle-window .scene .pokemon-container .hp.bar-back").removeClass("effective super-effective not-very-effective");
 						}, 250);
 					}
 				}
 
 				// Update the autotap button and queue an action
-
-				if(autotap){
+				if (autotap) {
 					$(".controls .auto-tap").addClass("active");
 					battle.queueAction(0, "fast", 0);
-				} else{
+				} else {
 					$(".controls .auto-tap").removeClass("active");
 				}
 
 				// Queue a previously entered switch
-				if(bufferedSwitch > -1){
+				if (bufferedSwitch > -1) {
 					battle.queueAction(0, "switch", bufferedSwitch);
 				}
 
 				// Hide the switch button if only one Pokemon remains
-
-				if(players[0].getRemainingPokemon() == 1){
+				if (players[0].getRemainingPokemon() == 1) {
 					$(".battle-window .switch-btn").hide();
 				}
 
@@ -517,40 +501,39 @@ var BattlerMaster = (function () {
 				self.completeSwitchAnimation();
 			}
 
-
 			// Decrement the timer and update UI
-			self.updatePhaseTimer = function(){
+			self.updatePhaseTimer = function () {
 				// Update timer
 				phaseTimer = Math.max(phaseTimer - 1000 / 60, 0);
 				interfaceLockout = Math.max(interfaceLockout - 1000 / 60, 0);
 				$(".battle-window .timer .text").html(Math.floor(phaseTimer / 1000));
 
-				if(phaseTimer <= 0){
+				if (phaseTimer <= 0) {
 					clearInterval(phaseInterval);
 				}
 			}
 
-			self.openSwitchWindow = function(){
+			self.openSwitchWindow = function () {
 				// Update the switch window Pokemon
 				var team = players[0].getTeam();
 				var index = 0;
 
-				for(var i = 0; i < team.length; i++){
-					if(team[i] != activePokemon[0]){
+				for (var i = 0; i < team.length; i++) {
+					if (team[i] != activePokemon[0]) {
 						$(".switch-window .pokemon").eq(index).find(".cp").html(team[i].cp);
 						$(".switch-window .pokemon").eq(index).find(".name").html(team[i].speciesName);
 						$(".switch-window .pokemon").eq(index).find(".name").attr("class", "name " + team[i].types[0]);
 						$(".switch-window .pokemon").eq(index).attr("index", i);
 						$(".switch-window .pokemon").eq(index).attr("type-1", team[i].types[0]);
-						if(team[i].types[1] == "none"){
+						if (team[i].types[1] == "none") {
 							$(".switch-window .pokemon").eq(index).attr("type-2", team[i].types[0]);
-						} else{
+						} else {
 							$(".switch-window .pokemon").eq(index).attr("type-2", team[i].types[1]);
 						}
 
-						if(team[i].hp > 0){
+						if (team[i].hp > 0) {
 							$(".switch-window .pokemon").eq(index).addClass("active");
-						} else{
+						} else {
 							$(".switch-window .pokemon").eq(index).removeClass("active");
 						}
 						index++;
@@ -559,14 +542,12 @@ var BattlerMaster = (function () {
 			}
 
 			// When a switch animation has completed, fill in the updated sprite
-
-			self.completeSwitchAnimation = function(){
-
-				$(".battle-window .pokemon-container.animate-switch").each(function(index, value){
+			self.completeSwitchAnimation = function () {
+				$(".battle-window .pokemon-container.animate-switch").each(function (index, value) {
 					var timePassed = time - parseInt($(this).attr("animation-time"));
 					var index = ($(this).hasClass("opponent")) ? 1 : 0;
 
-					if( (timePassed >= parseInt($(this).attr("animation-duration")))&&(activePokemon[index].hp > 0)){
+					if ((timePassed >= parseInt($(this).attr("animation-duration"))) && (activePokemon[index].hp > 0)) {
 						$(this).removeClass("animate-switch");
 						$(this).find(".pokemon").attr("type-1", activePokemon[index].types[0]);
 						$(this).eq(index).find(".name").attr("class", "name " + activePokemon[index].types[0]);
@@ -574,20 +555,17 @@ var BattlerMaster = (function () {
 						$(".team-indicator").eq(index).find(".name").html(activePokemon[index].speciesName);
 						$(".team-indicator").eq(index).find(".cp").html("CP " + activePokemon[index].cp);
 
-						if(activePokemon[index].types[1] != "none"){
+						if (activePokemon[index].types[1] != "none") {
 							$(this).find(".pokemon").attr("type-2", activePokemon[index].types[1]);
-						} else{
+						} else {
 							$(this).find(".pokemon").attr("type-2", activePokemon[index].types[0]);
 						}
 					}
 				});
-
 			}
 
 			// At the end of the game, show relevant battle stats
-
-			self.displayEndGameStats = function(){
-
+			self.displayEndGameStats = function () {
 				var maxScore = 400;
 				var totalDamage = 0;
 				var totalDamageBlocked = 0;
@@ -597,31 +575,30 @@ var BattlerMaster = (function () {
 				var totalChargedDamage = 0;
 
 				// Display damage stats
-
-				for(var k = 0; k < players.length; k++){
+				for (var k = 0; k < players.length; k++) {
 					var team = players[k].getTeam();
 
-					for(var i = 0; i < team.length; i++){
+					for (var i = 0; i < team.length; i++) {
 						var pokemon = team[i];
 						var width = (pokemon.battleStats.damage / maxScore) * 100;
 
-						if(k == 0){
+						if (k == 0) {
 							totalDamage += pokemon.battleStats.damage;
 							totalDamageBlocked += pokemon.battleStats.damageBlocked;
 							totalEnergyGained += pokemon.battleStats.energyGained;
 							totalEnergyUsed += pokemon.battleStats.energyUsed;
 							totalChargedDamage += pokemon.battleStats.chargedDamage;
 
-							if(pokemon.hp <= 0){
+							if (pokemon.hp <= 0) {
 								totalEnergyLost += pokemon.energy;
 							}
 						}
 
 						$(".battle-stats .damage-section").eq(k).find(".pokemon-entry .name").eq(i).html(pokemon.speciesName);
-						$(".battle-stats .damage-section").eq(k).find(".pokemon-entry .damage-bar").eq(i).css("width", width+"%");
+						$(".battle-stats .damage-section").eq(k).find(".pokemon-entry .damage-bar").eq(i).css("width", width + "%");
 						$(".battle-stats .damage-section").eq(k).find(".pokemon-entry").eq(i).find(".shield-bar").css("width", "0");
-						for(var n = 0; n < pokemon.battleStats.shieldsBurned; n++){
-							$(".battle-stats .damage-section").eq(k).find(".pokemon-entry").eq(i).find(".shield-bar").eq(n).css("width", ((50/maxScore) * 100)+"%");
+						for (var n = 0; n < pokemon.battleStats.shieldsBurned; n++) {
+							$(".battle-stats .damage-section").eq(k).find(".pokemon-entry").eq(i).find(".shield-bar").eq(n).css("width", ((50 / maxScore) * 100) + "%");
 						}
 					}
 				}
@@ -629,13 +606,12 @@ var BattlerMaster = (function () {
 				totalDamage = Math.round(totalDamage);
 
 				// Display shield stats
-
 				var team = players[0].getTeam();
 				var damageFromShields = 0;
 				var shieldsFromShields = 0;
 				var shieldsUsed = 2 - players[0].getShields();
 
-				for(var i = 0; i < team.length; i++){
+				for (var i = 0; i < team.length; i++) {
 					var pokemon = team[i];
 
 					damageFromShields += Math.round(pokemon.battleStats.damageFromShields);
@@ -643,26 +619,24 @@ var BattlerMaster = (function () {
 				}
 
 				$(".battle-stats .tab-section.shields .stat-shields-used").html(shieldsUsed);
-				$(".battle-stats .tab-section.shields .stat-damage-dealt").html((Math.round( (damageFromShields / totalDamage) * 1000) / 10)+"%");
+				$(".battle-stats .tab-section.shields .stat-damage-dealt").html((Math.round((damageFromShields / totalDamage) * 1000) / 10) + "%");
 				$(".battle-stats .tab-section.shields .stat-shields-drawn").html(shieldsFromShields);
 				$(".battle-stats .tab-section.shields .stat-damage-blocked").html(totalDamageBlocked);
 
 				// Display energy stats
-
 				$(".battle-stats .tab-section.energy .stat-energy-gained").html(totalEnergyGained);
 				$(".battle-stats .tab-section.energy .stat-energy-used").html(totalEnergyUsed);
 				$(".battle-stats .tab-section.energy .stat-energy-lost").html(totalEnergyLost);
-				$(".battle-stats .tab-section.energy .stat-avg-dpe").html(Math.round( (totalChargedDamage / totalEnergyUsed) * 100) / 100);
+				$(".battle-stats .tab-section.energy .stat-avg-dpe").html(Math.round((totalChargedDamage / totalEnergyUsed) * 100) / 100);
 
 				// Display AI difficulty
 				var opponentName = players[1].getAI().difficultyToString();
-				if(properties.featuredTeam !== null){
+				if (properties.featuredTeam !== null) {
 					opponentName = properties.featuredTeam.name;
 				}
 				$(".end-screen .difficulty-name").html(opponentName);
 
 				// Reset tabs
-
 				$(".end-screen a.tab").removeClass("active");
 				$(".end-screen .tab-section").hide();
 				$(".end-screen a.tab").eq(0).addClass("active");
@@ -670,73 +644,69 @@ var BattlerMaster = (function () {
 			}
 
 			// Report battle results to Google Analytics
-
-			this.reportBattleAnalytics = function(result){
-
-				var battleSummaryStr = battle.getCup().name + " " + battle.getCP() + " difficulty " + (players[1].getAI().getLevel()+1);
+			this.reportBattleAnalytics = function (result) {
+				var battleSummaryStr = battle.getCup().name + " " + battle.getCP() + " difficulty " + (players[1].getAI().getLevel() + 1);
 
 				// Report the overall battle result
-
-				if(properties.featuredTeam !== null){
+				if (properties.featuredTeam !== null) {
 					gtag('event', battleSummaryStr, {
-					  'event_category' : 'Training Battle',
-					  'event_label' : battleResult,
-					  'featured_team': properties.featuredTeam.slug
+						'event_category': 'Training Battle',
+						'event_label': battleResult,
+						'featured_team': properties.featuredTeam.slug
 					});
-				} else{
+				} else {
 					gtag('event', battleSummaryStr, {
-					  'event_category' : 'Training Battle',
-					  'event_label' : battleResult
+						'event_category': 'Training Battle',
+						'event_label': battleResult
 					});
 				}
-
 
 				// Gather team and Pokemon data
 				var teamStrs = [];
 				var teamScores = [];
 
-				for(var i = 0; i < players.length; i++){
+				for (var i = 0; i < players.length; i++) {
 					var team = players[i].getTeam();
 					var teamStr = '';
 					var backupPokeStrs = [];
 					var playerType = 0;
 					var teamScore = 0;
 
-					if(i == 1){
-						playerType = players[i].getAI().getLevel()+1;
+					if (i == 1) {
+						playerType = players[i].getAI().getLevel() + 1;
 					}
 
-					for(var n = 0; n < team.length; n++){
+					for (var n = 0; n < team.length; n++) {
 						var pokemon = team[n];
 						var pokeStr = pokemon.speciesName + ' ' + pokemon.fastMove.abbreviation;
 						var chargedMoveAbbrevations = [];
 
-						for(var k = 0; k < pokemon.chargedMoves.length; k++){
+						for (var k = 0; k < pokemon.chargedMoves.length; k++) {
 							chargedMoveAbbrevations.push(pokemon.chargedMoves[k].abbreviation);
 						}
 
 						// Sort alphabetically
-						chargedMoveAbbrevations.sort((a,b) => (a > b) ? 1 : ((b > a) ? -1 : 0));
+						chargedMoveAbbrevations.sort((a, b) => (a > b) ? 1 : ((b > a) ? -1 : 0));
 
-						for(var k = 0; k < chargedMoveAbbrevations.length; k++){
-							if(k == 0){
+						for (var k = 0; k < chargedMoveAbbrevations.length; k++) {
+							if (k == 0) {
 								pokeStr += "+" + chargedMoveAbbrevations[k];
-							} else{
+							} else {
 								pokeStr += "/" + chargedMoveAbbrevations[k];
 							}
 						}
 
 						// Add to team string
-						if(n == 0){
+						if (n == 0) {
 							teamStr += pokeStr;
-						} else{
+						} else {
 							backupPokeStrs.push(pokeStr);
 						}
 
 						// Assign this Pokemon's score in battle, damage done plus shields broken
 						var shieldValue = 50;
 
-						if((battle.getCP() == 2500)||(battle.getCP() == 10000)){
+						if ((battle.getCP() == 2500) || (battle.getCP() == 10000)) {
 							shieldValue = 40;
 						}
 
@@ -745,9 +715,9 @@ var BattlerMaster = (function () {
 					}
 
 					// Alphabetize the last two Pokemon on the team and build the team string
-					backupPokeStrs.sort((a,b) => (a > b) ? 1 : ((b > a) ? -1 : 0));
+					backupPokeStrs.sort((a, b) => (a > b) ? 1 : ((b > a) ? -1 : 0));
 
-					for(var n = 0; n < backupPokeStrs.length; n++){
+					for (var n = 0; n < backupPokeStrs.length; n++) {
 						teamStr += " " + backupPokeStrs[n];
 					}
 
@@ -756,119 +726,114 @@ var BattlerMaster = (function () {
 				}
 
 				// Report each team
-				for(var i = 0; i < players.length; i++){
+				for (var i = 0; i < players.length; i++) {
 					var team = players[i].getTeam();
 					var score = teamScores[i];
 					var opponentIndex = (i == 0) ? 1 : 0;
 					var opponentScore = teamScores[opponentIndex];
 					var maxScore = Math.max(teamScores[0], teamScores[1]);
 					var playerType = 0;
-					if(i == 1){
-						playerType = players[i].getAI().getLevel()+1;
+					if (i == 1) {
+						playerType = players[i].getAI().getLevel() + 1;
 					}
 
-					var battleRating = Math.floor( (500 * ((maxScore - opponentScore) / maxScore)) + (500 * (score / maxScore)))
+					var battleRating = Math.floor((500 * ((maxScore - opponentScore) / maxScore)) + (500 * (score / maxScore)))
 
 					// Report team stats
-
 					gtag('event', battleSummaryStr, {
-					  'event_category' : 'Training Team',
-					  'event_label' : teamStrs[i],
-					  'value' : battleRating+'',
-					  'player_type': playerType,
+						'event_category': 'Training Team',
+						'event_label': teamStrs[i],
+						'value': battleRating + '',
+						'player_type': playerType,
 					});
 
 					// Organize rosteer to report teams of 6
-
 					var roster = players[i].getRoster();
 					var pokeStrArr = [];
 
-					for(var n = 0; n < roster.length; n++){
+					for (var n = 0; n < roster.length; n++) {
 						var pokemon = roster[n];
 						var pokeStr = pokemon.speciesName + ' ' + pokemon.fastMove.abbreviation;
 						var chargedMoveAbbrevations = [];
 
-						for(var k = 0; k < pokemon.chargedMoves.length; k++){
+						for (var k = 0; k < pokemon.chargedMoves.length; k++) {
 							chargedMoveAbbrevations.push(pokemon.chargedMoves[k].abbreviation);
 						}
 
 						// Sort alphabetically
-						chargedMoveAbbrevations.sort((a,b) => (a > b) ? 1 : ((b > a) ? -1 : 0));
+						chargedMoveAbbrevations.sort((a, b) => (a > b) ? 1 : ((b > a) ? -1 : 0));
 
-						for(var k = 0; k < chargedMoveAbbrevations.length; k++){
-							if(k == 0){
+						for (var k = 0; k < chargedMoveAbbrevations.length; k++) {
+							if (k == 0) {
 								pokeStr += "+" + chargedMoveAbbrevations[k];
-							} else{
+							} else {
 								pokeStr += "/" + chargedMoveAbbrevations[k];
 							}
 						}
 
-						if(properties.mode == "tournament"){
+						if (properties.mode == "tournament") {
 							gtag('event', battleSummaryStr, {
-								  'event_category' : 'Training Roster Pokemon',
-								  'event_label' : pokemon.speciesId,
-								  'value' : battleRating+'',
-								  'player_type': playerType
-								});
+								'event_category': 'Training Roster Pokemon',
+								'event_label': pokemon.speciesId,
+								'value': battleRating + '',
+								'player_type': playerType
+							});
 						}
 
 						pokeStrArr.push(pokeStr);
 					}
 
 					// Alphabetize the roster names
-					pokeStrArr.sort((a,b) => (a > b) ? 1 : ((b > a) ? -1 : 0));
+					pokeStrArr.sort((a, b) => (a > b) ? 1 : ((b > a) ? -1 : 0));
 
 					var rosterStr = pokeStrArr.join(" ");
 
 					// Report roster stats
-
 					gtag('event', battleSummaryStr, {
-					  'event_category' : 'Training Roster',
-					  'event_label' : rosterStr,
-					  'value' : battleRating+'',
-					  'player_type': playerType,
+						'event_category': 'Training Roster',
+						'event_label': rosterStr,
+						'value': battleRating + '',
+						'player_type': playerType,
 					});
 
 					// Report individual Pokemon with team ratings
-
-					for(var n = 0; n < team.length; n++){
+					for (var n = 0; n < team.length; n++) {
 						var pokemon = team[n];
 						var pokeStr = pokemon.speciesName + ' ' + pokemon.fastMove.abbreviation;
 						var chargedMoveAbbrevations = [];
 
-						for(var k = 0; k < pokemon.chargedMoves.length; k++){
+						for (var k = 0; k < pokemon.chargedMoves.length; k++) {
 							chargedMoveAbbrevations.push(pokemon.chargedMoves[k].abbreviation);
 						}
 
 						// Sort alphabetically
-						chargedMoveAbbrevations.sort((a,b) => (a > b) ? 1 : ((b > a) ? -1 : 0));
+						chargedMoveAbbrevations.sort((a, b) => (a > b) ? 1 : ((b > a) ? -1 : 0));
 
-						for(var k = 0; k < chargedMoveAbbrevations.length; k++){
-							if(k == 0){
+						for (var k = 0; k < chargedMoveAbbrevations.length; k++) {
+							if (k == 0) {
 								pokeStr += "+" + chargedMoveAbbrevations[k];
-							} else{
+							} else {
 								pokeStr += "/" + chargedMoveAbbrevations[k];
 							}
 						}
 
 						gtag('event', battleSummaryStr, {
-						  'event_category' : 'Training Pokemon',
-						  'event_label' : pokeStr,
-						  'value' : pokemon.battleStats.score+'',
-						  'player_type': playerType,
-						  'team_position': n+1,
-						  'team_rating': battleRating
+							'event_category': 'Training Pokemon',
+							'event_label': pokeStr,
+							'value': pokemon.battleStats.score + '',
+							'player_type': playerType,
+							'team_position': n + 1,
+							'team_rating': battleRating
 						});
-
 					}
 				}
 			}
 
 			// Handler for the charge up interval
 
-			function chargeUpStep(){
+			function chargeUpStep() {
 				// Lock charge at 100 once user reaches 100
-				if(charge < maxCharge){
+				if (charge < maxCharge) {
 					charge = Math.max(charge - chargeDecayRate, 0);
 				}
 
@@ -882,33 +847,31 @@ var BattlerMaster = (function () {
 			}
 
 			// Click handler for sending input to the Battle object
-
-			function battleWindowClick(e){
-				if(interfaceLockout > 0){
+			function battleWindowClick(e) {
+				if (interfaceLockout > 0) {
 					return false;
 				}
 
 				// Open or close switch window
-				if($(".battle-window .switch-btn.active:hover").length > 0){
+				if ($(".battle-window .switch-btn.active:hover").length > 0) {
 					$(".switch-window").toggleClass("active");
-					if($(".switch-window").hasClass("active")){
+					if ($(".switch-window").hasClass("active")) {
 						self.openSwitchWindow();
 					}
 					return;
 				}
 
 				// Press one of the side button controls
-
-				if($(".battle-window .controls .button-stack:hover").length > 0){
+				if ($(".battle-window .controls .button-stack:hover").length > 0) {
 
 					// Pause or resume the game
-					if($(".controls .button-stack .pause-btn:hover").length > 0){
+					if ($(".controls .button-stack .pause-btn:hover").length > 0) {
 						$(".controls .button-stack .pause-btn").toggleClass("active");
 						battle.setPause($(".controls .button-stack .pause-btn").hasClass("active"));
 					}
 
 					// Open the restart confirm dialogue
-					if($(".controls .button-stack .restart-btn:hover").length > 0){
+					if ($(".controls .button-stack .restart-btn:hover").length > 0) {
 						// Pause the game
 						$(".controls .button-stack .pause-btn").addClass("active");
 						battle.setPause(true);
@@ -917,7 +880,7 @@ var BattlerMaster = (function () {
 					}
 
 					// Open the quit confirm dialogue
-					if($(".controls .button-stack .quit-btn:hover").length > 0){
+					if ($(".controls .button-stack .quit-btn:hover").length > 0) {
 						// Pause the game
 						$(".controls .button-stack .pause-btn").addClass("active");
 						battle.setPause(true);
@@ -929,10 +892,10 @@ var BattlerMaster = (function () {
 				}
 
 				// Queue a switch
-				if($(".switch-window .pokemon.active:hover").length > 0){
+				if ($(".switch-window .pokemon.active:hover").length > 0) {
 					var $target = $(e.target);
 
-					if(! $target.hasClass("pokemon")){
+					if (!$target.hasClass("pokemon")) {
 						$target = $(e.target).closest(".pokemon");
 					}
 
@@ -942,7 +905,7 @@ var BattlerMaster = (function () {
 
 					$(".switch-window").removeClass("active");
 
-					if(phase == "suspend_switch_self"){
+					if (phase == "suspend_switch_self") {
 						clearInterval(phaseInterval);
 					}
 
@@ -950,62 +913,58 @@ var BattlerMaster = (function () {
 				}
 
 				// Turn autotap on or off
-				if($(".controls .auto-tap:hover").length > 0){
-					autotap = (! autotap);
+				if ($(".controls .auto-tap:hover").length > 0) {
+					autotap = (!autotap);
 
-
-					if(autotap){
+					if (autotap) {
 						$(".controls .auto-tap").addClass("active");
 						// Queue a fast move
 						battle.queueAction(0, "fast", 0);
-					} else{
+					} else {
 						$(".controls .auto-tap").removeClass("active");
 					}
 					return;
 				}
 
 
-				if(($(".battle-window .controls .move-bar.active:hover").length == 0)&&($(".battle-window .switch-window:hover").length == 0)){
+				if (($(".battle-window .controls .move-bar.active:hover").length == 0) && ($(".battle-window .switch-window:hover").length == 0)) {
 					// Fast move
 					battle.queueAction(0, "fast", 0);
-				} else{
+				} else {
 					// Charged move
 					var $target = $(e.target);
 
-					if(! $target.hasClass("move-bar")){
+					if (!$target.hasClass("move-bar")) {
 						$target = $(e.target).closest(".move-bar");
 					}
 
 					var index = $(".battle-window .controls .move-bar").index($target); // Getting the index of the move
-					if((index >= 0)&&(index < activePokemon[0].chargedMoves.length)){
+					if ((index >= 0) && (index < activePokemon[0].chargedMoves.length)) {
 						battle.queueAction(0, "charged", index);
 					}
 				}
 
 				// Charge up a Charged Move
-				if(phase == "suspend_charged_attack"){
+				if (phase == "suspend_charged_attack") {
 					chargeUpClick(e);
 				}
 			}
 
 			// Click handler for sending input to the Battle object
-
-			function chargeUpClick(e){
+			function chargeUpClick(e) {
 				charge = Math.min(charge + chargeRate, maxCharge);
 			}
 
 			// Close the shield window
-
-			function closeShieldClick(){
-				if(interfaceLockout == 0){
+			function closeShieldClick() {
+				if (interfaceLockout == 0) {
 					$(".battle-window .shield-window").addClass("closed");
 				}
 			}
 
 			// Use a shield
-
-			function useShieldClick(){
-				if(interfaceLockout == 0){
+			function useShieldClick() {
+				if (interfaceLockout == 0) {
 					$(".battle-window .shield-window").addClass("closed");
 					$(".battle-window .pokemon-container.self .shield-sprite-container").addClass("active");
 					battle.setPlayerUseShield(true);
@@ -1013,74 +972,69 @@ var BattlerMaster = (function () {
 			}
 
 			// At the end of a 3v3 match, replay the same battle
-
-			function replayBattleClick(e){
+			function replayBattleClick(e) {
 				// Stop the current battle
 				battle.stop();
 
 				// Manually set the previous team
-				if(properties.mode == "single"){
+				if (properties.mode == "single") {
 					properties.teamSelectMethod = "manual";
 					properties.teams[1] = players[1].getTeam();
 					handler.initBattle(properties);
-				} else if(properties.mode == "tournament"){
+				} else if (properties.mode == "tournament") {
 					handler.startTournamentBattle(players[0].getTeam(), properties, players[1].getTeam());
 				}
 
 			}
 
 			// Go back to the settings page
-
-			function newMatchClick(e){
+			function newMatchClick(e) {
 				handler.returnToSetup();
 			}
 
 			// User has confirmed they want to quit the battle
-			function confirmQuitBattle(e){
+			function confirmQuitBattle(e) {
 				battle.stop();
 				closeModalWindow();
 
-				if(properties.mode == "single"){
+				if (properties.mode == "single") {
 					handler.returnToSetup();
-				} else if(properties.mode == "tournament"){
+				} else if (properties.mode == "tournament") {
 					handler.nextTournamentRoundSetup("tie");
 				}
 			}
 
 			// Go back to team select for a new round
-
-			function nextRoundClick(e){
+			function nextRoundClick(e) {
 				handler.nextTournamentRoundSetup(battleResult);
 			}
 
 			// Select a new tab on the end screen
-
-			function tabClick(e){
+			function tabClick(e) {
 				e.preventDefault();
 
 				$(".end-screen a.tab").removeClass("active");
 				$(".end-screen .tab-section").hide();
 				$(e.target).addClass("active");
-				$(".end-screen .tab-section."+$(e.target).attr("href")).show();
+				$(".end-screen .tab-section." + $(e.target).attr("href")).show();
 
 			}
 
 			// Handler for the the use shield timer
-
-			function phaseStep(){
+			function phaseStep() {
 				self.updatePhaseTimer();
 			}
 		}
 
-        return object;
-    }
+		return object;
+	}
 
-    return {
-        getInstance: function (matchHandler) {
-            if (!instance) {
-                instance = createInstance(matchHandler);
-            }
-            return instance;
-        }
-    };
+	return {
+		getInstance: function (matchHandler) {
+			if (!instance) {
+				instance = createInstance(matchHandler);
+			}
+			return instance;
+		}
+	};
 })();

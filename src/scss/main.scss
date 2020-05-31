@@ -3,6 +3,18 @@
 @import "abstract/placeholders";
 @import "abstract/variables";
 
-// Root
-@import "style";
-@import "train";
+// Base
+@import "base/animations";
+@import "base/resets";
+@import "base/typography";
+
+// Components
+@import "components/buttons";
+@import "components/navigation";
+
+// Legacy
+@import "legacy/style";
+@import "legacy/train";
+
+// Import last so styles may be overridden
+@import "base/js-classes";
