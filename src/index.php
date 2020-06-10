@@ -1,5 +1,13 @@
 <?php require_once 'header.php'; ?>
 
+<!-- 
+	ICONS:
+
+	<i class="fas fa-shield-alt"></i>
+	<i class="fas fa-weight-hanging"></i>
+
+-->
+
 <div class="section home white">
 	<p>Welcome to PvPoke.com! We're an open-source tool for simulating, ranking, and building teams for Pokemon GO PvP (player versus player) battles. Check out the links below to get started.</p>
 

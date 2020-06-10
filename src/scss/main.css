@@ -1,5 +1,11 @@
+.nav__list, .nav__link--brand {
+  display: flex;
+  align-items: center;
+}
+
 html {
   box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
   font-size: 100%;
 }
 
@@ -11,7 +17,6 @@ body {
 *::before,
 *::after {
   box-sizing: inherit;
-  font-family: "Roboto", sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -24,6 +29,7 @@ img {
 }
 
 a:link, a:visited {
+  color: #000;
   text-decoration: none;
 }
 
@@ -63,32 +69,109 @@ video {
   max-width: 100%;
 }
 
-/* STRUCTURE */
-body {
-  background: #f3fbfe;
-  background-size: cover;
+.nav {
+  padding: 2rem 5rem;
+}
+
+.nav__item {
+  transition: all 175ms ease-in-out;
+}
+
+.nav__item:first-child {
+  margin-right: auto;
+}
+
+.nav__item:not(:first-child):not(:nth-child(2)) {
+  margin-left: 2rem;
+}
+
+.nav__item:not(:first-child) {
+  padding: 0.5rem 1rem;
+}
+
+.nav__item:not(:first-child):hover {
+  background-color: #EABD49;
+}
+
+.nav__item--dropdown {
   position: relative;
-  min-height: 100%;
 }
 
-header {
-  padding: 5px;
-  box-sizing: border-box;
+.nav__item--dropdown:hover .nav__dropdown {
+  display: block;
+  transition: all 175ms ease-in-out;
 }
 
-header .header-wrap {
+.nav__link:link, .nav__link:visited {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.nav__logo {
+  margin-right: 0.75rem;
+  width: 3.75rem;
+}
+
+.nav__heading {
+  font-size: 1.75rem;
+}
+
+.nav__dropdown {
+  position: absolute;
+  top: 2rem;
+  left: 0;
+  display: none;
+  width: 13rem;
+}
+
+.nav__dropdown__item {
+  background-color: #EABD49;
+  padding: 0.5rem 1rem;
+  transition: all 175ms ease-in-out;
+}
+
+.nav__dropdown__link {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1.125rem;
+  transition: all 175ms ease-in-out;
+}
+
+.footer {
+  max-width: 800px;
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  font-size: 12px;
+  margin: 0 auto;
+}
+
+.footer p:first-of-type {
+  margin-top: 0;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  box-shadow: 0 0.75rem 0.75rem 0 rgba(0, 0, 0, 0.15);
+  z-index: 20;
+}
+
+.header-wrap {
   max-width: 800px;
   margin: 0 auto;
 }
 
-header .title {
+.header .title {
   font-size: 18px;
   margin: 0;
   display: inline-block;
   font-weight: normal;
 }
 
-header .title a {
+.header .title a {
   background-image: url("../img/app_192.png");
   background-size: contain;
   text-decoration: none;
@@ -98,59 +181,17 @@ header .title a {
   display: block;
 }
 
-header .menu {
-  padding: 3px 0;
-  float: right;
-}
-
-header .menu a {
-  display: block;
-  float: left;
-  margin-left: 20px;
-  color: #003748;
-  text-decoration: none;
-  background-repeat: no-repeat;
-  padding-left: 22px;
-  background-size: contain;
-  font-weight: bold;
-}
-
-header .menu .parent-menu {
-  position: relative;
-}
-
-footer {
-  max-width: 800px;
-  position: relative;
-  z-index: 10;
-  text-align: center;
-  font-size: 12px;
-  margin: 0 auto;
-}
-
-footer p:first-of-type {
-  margin-top: 0;
-}
-
 #main {
+  border-radius: 12px;
   max-width: 800px;
   margin: auto;
   padding: 10px;
-  border-radius: 12px;
+  position: relative;
+  z-index: 10;
 }
 
 #main > h1 {
   margin: 0;
-}
-
-#main {
-  position: relative;
-  z-index: 10;
-}
-
-header {
-  position: relative;
-  z-index: 25;
 }
 
 .background {
@@ -446,15 +487,11 @@ header {
 
 .poke .poke-stats .advanced-section .fields .ivs input {
   display: inline;
-  width: 27%;
   max-width: 66px;
   background: none;
   border: none;
   border-bottom: 1px solid #888;
   border-radius: 0px;
-  height: 22px;
-  -moz-appearance: textfield;
-  /* Firefox */
 }
 
 .poke .poke-stats .advanced-section .fields .ivs input::-webkit-outer-spin-button, .poke .poke-stats .advanced-section .fields .ivs input::-webkit-inner-spin-button {

@@ -1,0 +1,29 @@
+.header {
+	position: sticky;
+	top: 0;
+	background-color: $white;
+	box-shadow: 0 0.75rem 0.75rem 0 rgba(0, 0, 0, 0.15);
+	z-index: 20;
+
+	&-wrap {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+
+	.title {
+		font-size: 18px;
+		margin: 0;
+		display: inline-block;
+		font-weight: normal;
+
+		a {
+			background-image: url('../img/app_192.png');
+			background-size: contain;
+			text-decoration: none;
+			color: #000;
+			padding: 3px 0 3px 40px;
+			background-repeat: no-repeat;
+			display: block;
+		}
+	}
+}

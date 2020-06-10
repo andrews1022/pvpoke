@@ -1,0 +1,12 @@
+.footer {
+	max-width: 800px;
+	position: relative;
+	z-index: 10;
+	text-align: center;
+	font-size: 12px;
+	margin: 0 auto;
+
+	p:first-of-type {
+		margin-top: 0;
+	}
+}

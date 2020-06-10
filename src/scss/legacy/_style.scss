@@ -1,91 +1,14 @@
-/* STRUCTURE */
-body {
-	background: #f3fbfe;
-	background-size: cover;
-	position: relative;
-	min-height: 100%;
-}
-
-header {
-	padding: 5px;
-	box-sizing: border-box;
-
-	.header-wrap {
-		max-width: 800px;
-		margin: 0 auto;
-	}
-
-	.title {
-		font-size: 18px;
-		margin: 0;
-		display: inline-block;
-		font-weight: normal;
-
-		a {
-			background-image: url('../img/app_192.png');
-			background-size: contain;
-			text-decoration: none;
-			color: #000;
-			padding: 3px 0 3px 40px;
-			background-repeat: no-repeat;
-			display: block;
-		}
-	}
-
-	.menu {
-		padding: 3px 0;
-		float: right;
-
-		a {
-			display: block;
-			float: left;
-			margin-left: 20px;
-			color: $color-links;
-			text-decoration: none;
-			background-repeat: no-repeat;
-			padding-left: 22px;
-			background-size: contain;
-			font-weight: bold;
-		}
-
-		.parent-menu {
-			position: relative;
-		}
-	}
-}
-
-footer {
-	max-width: 800px;
-	position: relative;
-	z-index: 10;
-	text-align: center;
-	font-size: 12px;
-	margin: 0 auto;
-
-	p:first-of-type {
-		margin-top: 0;
-	}
-}
-
 #main {
+	border-radius: 12px;
 	max-width: 800px;
 	margin: auto;
 	padding: 10px;
-	border-radius: 12px;
-
-	&>h1 {
-		margin: 0;
-	}
-}
-
-#main {
 	position: relative;
 	z-index: 10;
-}
 
-header {
-	position: relative;
-	z-index: 25;
+	& > h1 {
+		margin: 0;
+	}
 }
 
 .background {
@@ -142,7 +65,6 @@ header {
 }
 
 /* HOME PAGE STYLING */
-
 .home {
 	a.button {
 		display: block;
@@ -387,15 +309,11 @@ header {
 
 				.ivs input {
 					display: inline;
-					width: 27%;
 					max-width: 66px;
 					background: none;
 					border: none;
 					border-bottom: 1px solid #888;
 					border-radius: 0px;
-					height: 22px;
-					-moz-appearance: textfield;
-					/* Firefox */
 
 					&::-webkit-outer-spin-button,
 					&::-webkit-inner-spin-button {
@@ -3647,6 +3565,7 @@ a.toggle {
 	}
 
 	.article {
+
 		.threats-table,
 		.alternatives-table,
 		.meta-table {

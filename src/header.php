@@ -132,48 +132,53 @@
 </head>
 
 <body>
+	<!-- start of header -->
 	<header class="header">
-		<nav>
+		<!-- start of nav -->
+		<nav class="nav">
+			<!-- start of nav list -->
+			<ul class="nav__list">
+				<li class="nav__item">
+					<a class="nav__link nav__link--brand" href="/pvpoke/src">
+						<img class="nav__logo" src="/pvpoke/src/img/logos/logo-192px.png" alt="PvPoke logo">
+						<h1 class="nav__heading">PvPoke</h1>
+					</a>
+				</li>
+				<li class="nav__item">
+					<a class="nav__link" href="<?php echo $WEB_ROOT; ?>battle/">Battle</a>
+				</li>
+				<li class="nav__item">
+					<a class="nav__link" href="<?php echo $WEB_ROOT; ?>train/">Train</a>
+				</li>
+				<li class="nav__item nav__item--dropdown">
+					<a class="nav__link" href="<?php echo $WEB_ROOT; ?>rankings/">Rankings</a>
+					<ul class="nav__dropdown">
+						<li class="nav__dropdown__item">
+							<a class="nav__dropdown__link" href="<?php echo $WEB_ROOT; ?>custom-rankings/">Custom Rankings</a>
+						</li>
+					</ul>
+				</li>
+				<li class="nav__item">
+					<a class="nav__link" href="<?php echo $WEB_ROOT; ?>team-builder/">Team Builder</a>
+				</li>
+				<li class="nav__item">
+					<a class="nav__link" href="<?php echo $WEB_ROOT; ?>moves/">Moves</a>
+				</li>
+				<li class="nav__item">
+					<a class="nav__link" href="<?php echo $WEB_ROOT; ?>articles/">Articles</a>
+				</li>
+				<li class="nav__item">
+					<a class="nav__link" href="<?php echo $WEB_ROOT; ?>contribute/">Contribute</a>
+				</li>
+			</ul> <!-- end of nav list -->
+		</nav> <!-- end of nav -->
 		
-		</nav>
-		
-		<div class="header-wrap">
-			<div class="hamburger">
-				<div class="meat"></div>
-				<div class="meat"></div>
-				<div class="meat"></div>
-			</div>
-			<h1 class="title">
-				<a href="/pvpoke/src">PvPoke.com</a>
-			</h1>
-			<div class="menu">
-				<a class="icon-battle" href="<?php echo $WEB_ROOT; ?>battle/">Battle</a>
-				<a class="icon-train" href="<?php echo $WEB_ROOT; ?>train/">Train</a>
-				<div class="parent-menu">
-					<a class="icon-rankings" href="<?php echo $WEB_ROOT; ?>rankings/">Rankings</a>
-					<div class="submenu">
-						<div class="submenu-wrap">
-							<a class="icon-rankings" href="<?php echo $WEB_ROOT; ?>custom-rankings/">Custom Rankings</a>
-						</div>
-					</div>
-				</div>
-				<a class="icon-team" href="<?php echo $WEB_ROOT; ?>team-builder/">Team Builder</a>
-				<div class="parent-menu">
-					<a class="more desktop" href="#"></a>
-					<div class="submenu">
-						<div class="submenu-wrap">
-							<a class="icon-moves" href="<?php echo $WEB_ROOT; ?>moves/">Moves</a>
-							<a class="icon-articles" href="<?php echo $WEB_ROOT; ?>articles/">Articles</a>
-							<a class="icon-contribute" href="<?php echo $WEB_ROOT; ?>contribute/">Contribute</a>
-							<a class="icon-settings" href="<?php echo $WEB_ROOT; ?>settings/">Settings</a>
-							<a class="icon-twitter" href="https://twitter.com/pvpoke" target="_blank">Twitter</a>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="clear"></div>
+		<div class="hamburger">
+			<div class="meat"></div>
+			<div class="meat"></div>
+			<div class="meat"></div>
 		</div>
-	</header>
+	</header> <!-- end of header -->
 
 	<div class="main-wrap">
 		<div id="main">
